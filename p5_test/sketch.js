@@ -4,7 +4,7 @@ function setup() {
   createCanvas(1000, 1000);
   
   // Create multiple fish
-  for (let i = 0; i < 400; i++) {
+  for (let i = 0; i < 600; i++) {
     let fish = new Fish();
     fishes.push(fish);
   }
@@ -23,23 +23,25 @@ class Fish {
     constructor() {
       this.position = createVector(random(width), random(height));
       this.velocity = p5.Vector.random2D();
-      this.maxSpeed = random(1, 4);
-      this.size = random(5, 10);
+      this.maxSpeed = random(1,2);
+      this.size = random(5, 15);
+      this.past = p5.Vector.random2D();
     }
     
     update() {
         let mouse = createVector(mouseX, mouseY);
         let dir;
-        
-        if (dist(this.position.x, this.position.y, mouse.x, mouse.y) < 300) {
+        let extra;
+
+        if (dist(this.position.x, this.position.y, mouse.x, mouse.y) < 200) {
           dir = p5.Vector.sub(this.position, mouse); // Calculate the direction away from the cursor
         } else {
-          dir = this.velocity.copy(); // Use the current velocity if the fish is far from the cursor
+          dir = this.velocity.copy().add(this.past); // Use the current velocity if the fish is far from the cursor
         }
         
         dir.normalize();
-        dir.mult(0.5); // Adjust avoidance speed
-        
+        dir.mult(0.5);
+
         this.velocity.add(dir);
         this.velocity.limit(this.maxSpeed);
         this.position.add(this.velocity);
